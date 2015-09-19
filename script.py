@@ -50,7 +50,6 @@ class Worker(Daemon):
         bot = telegram.Bot(token)
 
         temp = '/temp'
-        schedule = '/schedule'
         today = '/today'
         
         weekdays = ['/tuesday', '/wednesday', '/thursday', '/friday', '/saturday']
