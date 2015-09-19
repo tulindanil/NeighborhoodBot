@@ -1,4 +1,4 @@
-import time, sys, os, logging
+import time, sys, os, logging, datetime
 from daemon import Daemon
 
 import telegram
@@ -29,6 +29,8 @@ class Worker(Daemon):
         bot = telegram.Bot(token)
 
         temp = '/temp'
+        schedule = '/schedule'
+        today = '/today'
 
         while 1:
         
@@ -45,6 +47,18 @@ class Worker(Daemon):
 
                         if m.text == temp:
                             bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
+                        elif m.text == schedule:
+                        
+                        elif m.text == today:
+                        
+                            bot.sendMessage(m.from_user.id, 'Your schedule:')
+                            weekday = datetime.datetime.today().weekday()
+                        
+                            schedule = json.load(open('schedule.json').read())
+                        
+                            for lesson in schedule[str(weekday)]:
+                                bot.sendMessage(m.from_user.id, "%s %s : %s" % (lesson['time'], lesson['subject'], lesson['place']))
+                        
                         else:
                             bot.sendMessage(m.from_user.id, 'It\'s not supported now')
 
