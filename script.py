@@ -18,7 +18,7 @@ class hardware:
 class schedule:
 
     @staticmethod
-    def getDescription(day):
+    def getDescription(weekday):
 
         raw = open('/home/pi/NeighborhoodBot/schedule.json')
         data = json.load(raw)
@@ -27,7 +27,7 @@ class schedule:
         answer = ""
                 
         try:
-            day = data[str(day)]
+            day = data[str(weekday)]
             answer = "Your schedule :\n"
             for lesson in day:
                 answer += "%s - %s: %s\n" % (day[lesson]['time'], day[lesson]['subject'], day[lesson]['place'])
