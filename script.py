@@ -18,9 +18,11 @@ class hardware:
 class Worker(Daemon):
 
     def run(self):
-
+    
         f = open('auth.info')
         token = f.read()[:-1]
+
+        logging.info('Got token')
 
         bot = telegram.Bot(token)
 
