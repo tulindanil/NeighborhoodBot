@@ -74,7 +74,7 @@ class Daemon:
             sys.stderr.write(message % self.pidfile)
             sys.exit(1)
         
-       # self.daemonize()
+        self.daemonize()
         self.run()
     
     def stop(self):
