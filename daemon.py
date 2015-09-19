@@ -1,4 +1,5 @@
 import sys, os, time, atexit, logging
+from signal import SIGTERM
 
 class Daemon:
     
