@@ -27,7 +27,7 @@ class schedule:
         answer = ""
                 
         try:
-            day = data[str(weekday)]
+            day = data[str(day)]
             answer = "Your schedule :\n"
             for lesson in day:
                 answer += "%s - %s: %s\n" % (day[lesson]['time'], day[lesson]['subject'], day[lesson]['place'])
