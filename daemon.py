@@ -1,4 +1,4 @@
-import sys, os, time, atexit
+import sys, os, time, atexit, logging
 
 class Daemon:
     
@@ -19,12 +19,14 @@ class Daemon:
     
         except OSError, e:
             
-            sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
+            logging.error("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
 
         os.chdir("/")
         os.setsid()
         os.umask(0)
+        
+        logging.info("Ready for second fork")
         
         try:
             
@@ -34,11 +36,15 @@ class Daemon:
 
         except OSError, e:
         
-            sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
+            logging.error("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
+        
+        logging.info("forked")
         
         sys.stdout.flush()
         sys.stderr.flush()
+        
+        logging.info("flushed")
         
         si = file(self.stdin, 'r')
         so = file(self.stdout, 'a+')
@@ -48,9 +54,25 @@ class Daemon:
         os.dup2(so.fileno(), sys.stdout.fileno())
         os.dup2(se.fileno(), sys.stderr.fileno())
         
+        logging.info("dupped")
+        
         atexit.register(self.delpid)
-        pid = str(os.getpid())
-        file(self.pidfile, 'w+').write("%s\n" % pid)
+        
+        try:
+        
+            pid = str(os.getpid())
+        
+        except OSError, e:
+            
+            logging.error("pid getting failed: %d (%s)\n" % (e.errno, e.strerror))
+            sys.exit(1)
+        
+        try:
+            file(self.pidfile, 'w+').write("%s\n" % pid)
+        except Exception as e:
+            logging.errno("Failed to write to pid file %s" % e.strerror)
+                
+        logging.info("created pid file")
 
     def delpid(self):
         
@@ -74,7 +96,10 @@ class Daemon:
             sys.stderr.write(message % self.pidfile)
             sys.exit(1)
         
+        logging.info("Staring daemonazing")
         self.daemonize()
+        logging.info("Daemonazied")
+        
         self.run()
     
     def stop(self):
