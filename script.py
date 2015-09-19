@@ -76,7 +76,7 @@ class Worker(Daemon):
                         if m.text == temp:
                             
                             waiting_for_weekday = 0
-                            bot.sendMessage(m.from_user.id, schedule.getDescription(hardware.getTemperature()))
+                            bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
                     
                         elif m.text in weekdays:
                         
