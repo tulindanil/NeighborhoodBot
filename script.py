@@ -15,6 +15,27 @@ class hardware:
         
         return float(data[data.find('t=')+2:])/1000
 
+class schedule:
+
+    @staticmethod
+    def getDescription(day):
+
+        raw = open('/home/pi/NeighborhoodBot/schedule.json')
+        data = json.load(raw)
+        raw.close()
+            
+        answer = ""
+                
+        try:
+            day = data[str(weekday)]
+            answer = "Your schedule :\n"
+            for lesson in day:
+                answer += "%s - %s: %s\n" % (day[lesson]['time'], day[lesson]['subject'], day[lesson]['place'])
+        except:
+            answer = "I think you got a dayoff!"
+
+        return answer
+
 class Worker(Daemon):
 
     def run(self):
@@ -56,52 +77,15 @@ class Worker(Daemon):
                             
                             waiting_for_weekday = 0
                             bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
+                    
+                        elif m.text in weekdays:
                         
-                        elif m.text == schedule:
+                            bot.sendMessage(m.from_user.id, schedule.getDescription(weekdays.index(m.text) + 1))
                         
-                            waiting_for_weekday = 1
+                        elif m.text == today:
                             
-                            answer = 'In what day are you interested in?\n'
-                            for day in weekdays:
-                                answer += '%s ' % day
-                                    
-                            bot.sendMessage(m.from_user.id, answer)
-                        
-                        
-                        elif m.text == today or waiting_for_weekday:
-                            
-                            weekday = 0
-                            
-                            if m.text == today:
-                                weekday = datetime.datetime.today().weekday()
-                            else:
-                                try:
-                                    weekday = weekdays.index(m.text) + 1
-                                except:
-                                    try:
-                                        weekday = weekdays.index(m.text) + 1
-                                    except:
-                                        bot.sendMessage(m.from_user.id, 'Hey, there is no such day!')
-                        
-                            waiting_for_weekday = 0
-                            
-                            raw = open('/home/pi/NeighborhoodBot/schedule.json')
-                            data = json.load(raw)
-                            raw.close()
-                            
-                            answer = ""
-                            
-                            try:
-                                day = data[str(weekday)]
-                                
-                                answer = "Your schedule :\n"
-                                
-                                for lesson in day:
-                                    answer += "%s - %s: %s\n" % (day[lesson]['time'], day[lesson]['subject'], day[lesson]['place'])
-                            except:
-                                answer = "I think you got a dayoff!"
-                        
-                            bot.sendMessage(m.from_user.id, answer)
+                            weekday = datetime.datetime.today().weekday()
+                            bot.sendMessage(m.from_user.id, schedule.getDescription(weekday))
 
                         else:
                             
