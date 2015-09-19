@@ -85,7 +85,7 @@ class Worker(Daemon):
                         
                             waiting_for_weekday = 0
                             
-                            raw = open('schedule.json')
+                            raw = open('/home/pi/NeighborhoodBot/schedule.json')
                             data = json.load(raw)
                             raw.close()
                             
