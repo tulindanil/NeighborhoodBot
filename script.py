@@ -39,6 +39,8 @@ class Worker(Daemon):
 
                     if m.text == temp:
                         bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
+                    else:
+                        bot.sendMessage(m.from_user.id, 'It\'s not supported now')
 
                 bot.getUpdates(update_id + 1)
 
