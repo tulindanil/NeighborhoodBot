@@ -1,4 +1,4 @@
-import time, sys, os, logging, datetime
+import time, sys, os, logging, datetime, json
 from daemon import Daemon
 
 import telegram
@@ -31,48 +31,91 @@ class Worker(Daemon):
         temp = '/temp'
         schedule = '/schedule'
         today = '/today'
+        
+        weekdays = ['/tuesday', '/wednesday', '/thursday', '/friday', '/saturday']
+        dayoffs = ['/monday', '/sunday']
+
+        waiting_for_weekday = 0
 
         while 1:
-        
+            
+            updates = bot.getUpdates()
+            
             try:
-        
-                updates = bot.getUpdates()
 
                 if len(updates) > 0:
                     
                     update_id = updates[len(updates) - 1].update_id
+                    bot.getUpdates(update_id + 1)
+                    
                     messages = [u.message for u in updates]
-
+                    
                     for m in messages:
-
+                        
                         if m.text == temp:
+                            
+                            waiting_for_weekday = 0
                             bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
+                        
                         elif m.text == schedule:
                         
-                            schedule = json.load(open('schedule.json').read())
+                            waiting_for_weekday = 1
+                            
+                            answer = 'In what day are you interested in?\n'
+                            for day in weekdays:
+                                answer += '%s ' % day
+                                    
+                            bot.sendMessage(m.from_user.id, answer)
                         
-                        elif m.text == today:
                         
-                            bot.sendMessage(m.from_user.id, 'Your schedule:')
-                            weekday = datetime.datetime.today().weekday()
+                        elif m.text == today or waiting_for_weekday:
+                            
+                            weekday = 0
+                            
+                            if m.text == today:
+                                weekday = datetime.datetime.today().weekday()
+                            else:
+                                try:
+                                    weekday = weekdays.index(m.text) + 1
+                                except:
+                                    try:
+                                        weekday = weekdays.index(m.text) + 1
+                                    except:
+                                        bot.sendMessage(m.from_user.id, 'Hey, there is no such day!')
                         
-                            schedule = json.load(open('schedule.json').read())
+                            waiting_for_weekday = 0
+                            
+                            raw = open('schedule.json')
+                            data = json.load(raw)
+                            raw.close()
+                            
+                            answer = ""
+                            
+                            try:
+                                day = data[str(weekday)]
+                                
+                                answer = "Your schedule :\n"
+                                
+                                for lesson in day:
+                                    answer += "%s - %s: %s\n" % (day[lesson]['time'], day[lesson]['subject'], day[lesson]['place'])
+                            except:
+                                answer = "I think you got a dayoff!"
                         
-                            for lesson in schedule[str(weekday)]:
-                                bot.sendMessage(m.from_user.id, "%s %s : %s" % (lesson['time'], lesson['subject'], lesson['place']))
-                        
+                            bot.sendMessage(m.from_user.id, answer)
+
                         else:
-                            bot.sendMessage(m.from_user.id, 'It\'s not supported now')
-
-                    bot.getUpdates(update_id + 1)
-
+                            
+                            bot.sendMessage(m.from_user.id, 'Try again, just do it!')
+        
             except Exception as e:
+                
                 logging.error(e)
-
 
 if __name__ == '__main__':
 
     worker = Worker('/tmp/neighborhoodBot.pid')
+
+    worker.run()
 
     logfile = 'neighbourhoodBot.log'
     
