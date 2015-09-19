@@ -115,8 +115,6 @@ if __name__ == '__main__':
 
     worker = Worker('/tmp/neighborhoodBot.pid')
 
-    worker.run()
-
     logfile = 'neighbourhoodBot.log'
     
     if os.path.exists(logfile):
