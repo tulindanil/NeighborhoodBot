@@ -49,6 +49,8 @@ class Worker(Daemon):
                             bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
                         elif m.text == schedule:
                         
+                            schedule = json.load(open('schedule.json').read())
+                        
                         elif m.text == today:
                         
                             bot.sendMessage(m.from_user.id, 'Your schedule:')
