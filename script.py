@@ -3,6 +3,18 @@ from daemon import Daemon
 
 import telegram
 
+class hardware:
+    
+    @staticmethod
+    def getTemperature():
+        
+        filepath = '/sys/devices/w1_bus_master1/28-0000052c4b73/w1_slave'
+        f = open(filepath, 'r')
+        data = f.read()
+        f.close()
+        
+        return float(data[data.find('t=')+2:])/1000
+
 class Worker(Daemon):
 
     def run(self):
@@ -13,8 +25,6 @@ class Worker(Daemon):
         bot = telegram.Bot(token)
 
         temp = '/temp'
-
-#        bot.sendMessage(55978, 'hello')
 
         while 1:
         
@@ -28,7 +38,7 @@ class Worker(Daemon):
                 for m in messages:
 
                     if m.text == temp:
-                        bot.sendMessage(m.from_user.id, '23.0')
+                        bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
 
                 bot.getUpdates(update_id + 1)
 
