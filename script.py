@@ -30,22 +30,26 @@ class Worker(Daemon):
 
         while 1:
         
-            updates = bot.getUpdates()
+            try:
+        
+                updates = bot.getUpdates()
 
-            if len(updates) > 0:
-                
-                update_id = updates[len(updates) - 1].update_id
-                messages = [u.message for u in updates]
+                if len(updates) > 0:
+                    
+                    update_id = updates[len(updates) - 1].update_id
+                    messages = [u.message for u in updates]
 
-                for m in messages:
+                    for m in messages:
 
-                    if m.text == temp:
-                        bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
-                    else:
-                        bot.sendMessage(m.from_user.id, 'It\'s not supported now')
+                        if m.text == temp:
+                            bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
+                        else:
+                            bot.sendMessage(m.from_user.id, 'It\'s not supported now')
 
-                bot.getUpdates(update_id + 1)
+                    bot.getUpdates(update_id + 1)
 
+            except Exception as e:
+                logging.error(e)
 
 
 if __name__ == '__main__':
