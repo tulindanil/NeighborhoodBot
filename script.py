@@ -110,7 +110,7 @@ class Worker(Daemon):
 
                         else:
                             
-                            bot.sendMessage(m.from_user.id, 'Sorry, I dont undestand you :(')
+                            bot.sendMessage(m.from_user.id, 'Sorry, I dont understand you :(')
         
             except Exception as e:
                 
@@ -121,7 +121,7 @@ if __name__ == '__main__':
     worker = Worker('/tmp/neighborhoodBot.pid')
 
     logfile = 'neighbourhoodBot.log'
-    logging.basicConfig(format = '%(asctime)s:%(levelname)s:%(message)s' ,level = logging.WARNING, filename = logfile)
+    logging.basicConfig(format = '%(asctime)s:%(levelname)s:%(message)s' ,level = logging.WARNING)
     
     if len(sys.argv) == 2:
         
