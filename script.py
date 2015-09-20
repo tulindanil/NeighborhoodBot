@@ -98,10 +98,13 @@ class Worker(Daemon):
                     
                     for m in messages:
                         
+                        storage.addUser(m.from_user)
+                        
                         if m.text == start:
                         
-                            storage.addUser(m.from_user)
-                        
+                            bot.sendMessage(m.from_user.id, 'Good day!')
+#                            storage.addUser(m.from_user)
+
                         elif m.text == temp:
                             
                             bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
