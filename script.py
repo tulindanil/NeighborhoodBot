@@ -94,7 +94,7 @@ class Worker(Daemon):
         
             elif m.text in self.weekdays:
                 
-                bot.sendMessage(m.from_user.id, schedule.getDescription(weekdays.index(m.text) + 1))
+                bot.sendMessage(m.from_user.id, schedule.getDescription(self.weekdays.index(m.text) + 1))
             
             elif m.text == self.today:
                 
