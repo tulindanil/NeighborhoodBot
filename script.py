@@ -47,12 +47,11 @@ class storage:
             filepath = '/etc/NeighborhoodBot/users.json'
             f = open(filepath)
             f.write(user.to_json())
-            print user.to_json()
             f.close()
 
-        except:
+        except Exception as e:
 
-            logging.error('Failed to write in user file')
+            logging.error('Failed to write in user file: %s', e)
 
 class Worker(Daemon):
 
@@ -95,7 +94,7 @@ class Worker(Daemon):
                         
                             storage.addUser(m.from_user)
                         
-                        if m.text == temp:
+                        elif m.text == temp:
                             
                             bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
                     
