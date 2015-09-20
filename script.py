@@ -69,67 +69,71 @@ class storage:
 
 class Worker(Daemon):
 
+    def main_loop(bot):
+    
+        updates = bot.getUpdates()
+            
+        if len(updates) == 0:
+            continue
+            
+        update_id = updates[len(updates) - 1].update_id
+        bot.getUpdates(update_id + 1)
+        
+        messages = [u.message for u in updates]
+        
+        for m in messages:
+            
+            if m.text == self.start:
+                
+                bot.sendMessage(m.from_user.id, 'Good day!')
+                storage.addUser(m.from_user)
+            
+            elif m.text == self.temp:
+                
+                bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
+        
+            elif m.text in self.weekdays:
+                
+                bot.sendMessage(m.from_user.id, schedule.getDescription(weekdays.index(m.text) + 1))
+            
+            elif m.text == self.today:
+                
+                weekday = datetime.datetime.today().weekday()
+                bot.sendMessage(m.from_user.id, schedule.getDescription(weekday))
+    
+            else:
+                
+                bot.sendMessage(m.from_user.id, 'Sorry, I dont understand you :(')
+
     def run(self):
     
         logging.info('ready for running')
-    
-        f = open('/etc/NeighborhoodBot/.auth.info')
-        token = f.read()[:-1]
+        
+        token = ''
+        
+        try:
+            f = open('/etc/NeighborhoodBot/.auth.info')
+            token = f.read()[:-1]
+        except:
+            logging.error('Auth.info not provided')
+            sys.exit(2)
 
         logging.info('Got token')
 
         bot = telegram.Bot(token)
 
-        temp = '/temp'
-        today = '/today'
-        start = '/start'
+        self.temp = '/temp'
+        self.today = '/today'
+        self.start = '/start'
         
-        weekdays = ['/tuesday', '/wednesday', '/thursday', '/friday', '/saturday']
-        dayoffs = ['/monday', '/sunday']
-
-        waiting_for_weekday = 0
+        self.weekdays = ['/tuesday', '/wednesday', '/thursday', '/friday', '/saturday']
+        self.dayoffs = ['/monday', '/sunday']
 
         while 1:
             
-            updates = bot.getUpdates()
-            
             try:
-
-                if len(updates) > 0:
-                    
-                    update_id = updates[len(updates) - 1].update_id
-                    bot.getUpdates(update_id + 1)
-                    
-                    messages = [u.message for u in updates]
-                    
-                    for m in messages:
-                        
-                        storage.addUser(m.from_user)
-                        
-                        if m.text == start:
-                        
-                            bot.sendMessage(m.from_user.id, 'Good day!')
-#                            storage.addUser(m.from_user)
-
-                        elif m.text == temp:
-                            
-                            bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
-                    
-                        elif m.text in weekdays:
-                        
-                            bot.sendMessage(m.from_user.id, schedule.getDescription(weekdays.index(m.text) + 1))
-                        
-                        elif m.text == today:
-                            
-                            weekday = datetime.datetime.today().weekday()
-                            bot.sendMessage(m.from_user.id, schedule.getDescription(weekday))
-
-                        else:
-                            
-                            bot.sendMessage(m.from_user.id, 'Sorry, I dont understand you :(')
-        
+                self.main_loop(bot)
             except Exception as e:
-                
                 logging.error(e)
 
 if __name__ == '__main__':
