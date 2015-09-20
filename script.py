@@ -30,7 +30,6 @@ class schedule:
             day = data[str(weekday)]
             answer = "Your schedule :\n"
             for lesson in day:
-                print lesson
                 answer += "%s - %s: %s\n" % (day[lesson]['time'], day[lesson]['subject'], day[lesson]['place'])
         except:
             answer = "I think you got a dayoff!"
@@ -47,19 +46,20 @@ class storage:
             filepath = '/etc/NeighborhoodBot/users.json'
             f = open(filepath, 'r')
             
-            data = []
+            data = {}
             
             try:
                 data = json.load(f)
             except:
-                data = []
+                data = {}
 
             try:
                 index = data.index(user.to_json())
             except:
-                data.append(user.to_json())
-                f = open (filepath, 'w')
-                f.write(data)
+                data[str(user.id)] = user.to_json()
+                f.close()
+                f = open(filepath, 'w')
+                f.write(json.dumps(data))
 
             f.close()
 
