@@ -46,6 +46,7 @@ class storage:
         f = open(filepath)
 
         f.write(user.to_json())
+        f.close()
 
 class Worker(Daemon):
 
