@@ -45,7 +45,7 @@ class storage:
         filepath = '/etc/NeighborhoodBot/users.json'
         f = open(filepath)
 
-        f.write(user.to_json())
+        print user.to_json()
         f.close()
 
 class Worker(Daemon):
