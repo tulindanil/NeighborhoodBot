@@ -34,7 +34,7 @@ class schedule:
             day_sorted = OrderedDict(sorted(data.items()))
             
             for lesson in day_sorted:
-                answer += "%s - %s: %s\n" % (day[lesson]['time'], day[lesson]['subject'], day[lesson]['place'])
+                answer += "%s - %s: %s\n" % (day_sorted[lesson]['time'], day_sorted[lesson]['subject'], day_sorted[lesson]['place'])
         except:
             answer = "I think you got a dayoff!"
 
