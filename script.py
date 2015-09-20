@@ -42,11 +42,17 @@ class storage:
     @staticmethod
     def addUser(user):
 
-        filepath = '/etc/NeighborhoodBot/users.json'
-        f = open(filepath)
+        try:
 
-        print user.to_json()
-        f.close()
+            filepath = '/etc/NeighborhoodBot/users.json'
+            f = open(filepath)
+            f.write(user.to_json())
+            print user.to_json()
+            f.close()
+
+        except:
+
+            logging.error('Failed to write in user file')
 
 class Worker(Daemon):
 
