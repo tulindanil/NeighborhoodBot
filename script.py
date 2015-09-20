@@ -30,11 +30,22 @@ class schedule:
             day = data[str(weekday)]
             answer = "Your schedule :\n"
             for lesson in day:
+                print lesson
                 answer += "%s - %s: %s\n" % (day[lesson]['time'], day[lesson]['subject'], day[lesson]['place'])
         except:
             answer = "I think you got a dayoff!"
 
         return answer
+
+class storage:
+
+    @staticmethod
+    def addUser(user):
+
+        filepath = '/etc/NeighborhoodBot/users.json'
+        f = open(filepath)
+
+        f.write(user.to_json())
 
 class Worker(Daemon):
 
@@ -42,7 +53,7 @@ class Worker(Daemon):
     
         logging.info('ready for running')
     
-        f = open('/tmp/.auth.info')
+        f = open('/etc/NeighborhoodBot/.auth.info')
         token = f.read()[:-1]
 
         logging.info('Got token')
@@ -51,6 +62,7 @@ class Worker(Daemon):
 
         temp = '/temp'
         today = '/today'
+        start = '/start'
         
         weekdays = ['/tuesday', '/wednesday', '/thursday', '/friday', '/saturday']
         dayoffs = ['/monday', '/sunday']
@@ -72,9 +84,12 @@ class Worker(Daemon):
                     
                     for m in messages:
                         
+                        if m.text == start:
+                        
+                            storage.addUser(m.from_user)
+                        
                         if m.text == temp:
                             
-                            waiting_for_weekday = 0
                             bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
                     
                         elif m.text in weekdays:
@@ -88,7 +103,7 @@ class Worker(Daemon):
 
                         else:
                             
-                            bot.sendMessage(m.from_user.id, 'Try again, just do it!')
+                            bot.sendMessage(m.from_user.id, 'Sorry, I dont undestand you :(')
         
             except Exception as e:
                 
@@ -99,15 +114,13 @@ if __name__ == '__main__':
     worker = Worker('/tmp/neighborhoodBot.pid')
 
     logfile = 'neighbourhoodBot.log'
-    
-    if os.path.exists(logfile):
-        os.remove(logfile)
-
-    logging.basicConfig(format = '%(asctime)s:%(levelname)s:%(message)s' ,level = logging.INFO, filename = logfile)
+    logging.basicConfig(format = '%(asctime)s:%(levelname)s:%(message)s' ,level = logging.WARNING, filename = logfile)
     
     if len(sys.argv) == 2:
         
         if 'start' == sys.argv[1]:
+            if os.path.exists(logfile):
+                os.remove(logfile)
             worker.start()
         
         elif 'stop' == sys.argv[1]:
@@ -125,6 +138,13 @@ if __name__ == '__main__':
         
         sys.exit(0)
     
+    elif len(sys.argv) == 3:
+
+        if os.path.exists(logfile):
+            os.remove(logfile)
+
+        worker.run()
+
     else:
         
         print "usage: %s start|stop|restart|status" % sys.argv[0]
