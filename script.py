@@ -21,7 +21,7 @@ class schedule:
     @staticmethod
     def getDescription(weekday):
 
-        raw = open('./schedule.json')
+        raw = open('/home/pi/NeighborhoodBot/schedule.json')
         data = json.load(raw)
         raw.close()
             
