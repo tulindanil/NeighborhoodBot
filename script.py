@@ -45,7 +45,7 @@ class storage:
         try:
 
             filepath = '/etc/NeighborhoodBot/users.json'
-            f = open(filepath)
+            f = open(filepath, 'w')
             f.write(user.to_json())
             f.close()
 
