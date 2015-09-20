@@ -21,7 +21,7 @@ class schedule:
     @staticmethod
     def getDescription(weekday):
 
-        raw = open('/home/pi/NeighborhoodBot/schedule.json')
+        raw = open('./schedule.json')
         data = json.load(raw)
         raw.close()
             
@@ -31,14 +31,11 @@ class schedule:
             day = data[str(weekday)]
             answer = "Your schedule :\n"
             
-            day_sorted = collections.OrderedDict(sorted(data.items()))
-            
+            day_sorted = collections.OrderedDict(sorted(day.items()))
             for lesson in day_sorted:
-                print lesson
                 answer += "%s - %s: %s\n" % (day_sorted[lesson]['time'], day_sorted[lesson]['subject'], day_sorted[lesson]['place'])
     
-        except Exception as e:
-            print e.errno
+        except:
             answer = "I think you got a dayoff!"
 
         return answer
