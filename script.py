@@ -92,6 +92,15 @@ class Worker(Daemon):
                 bot.sendMessage(m.from_user.id, 'Good day!')
                 storage.addUser(m.from_user)
             
+            elif m.text == self.pull:
+            
+                try:
+                    os.system('cd /home/pi/NeighborhoodBot && git pull')
+                    bot.sendMessage(m.from_user.id, 'Succesfully pulled!')
+                    os.system('cd /home/pi/NeighborhoodBot && python script.py restart')
+                except Exception as e:
+                    logging.warnign('Files to pull: %s', e)
+            
             elif m.text == self.temp:
                 
                 bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
@@ -129,6 +138,7 @@ class Worker(Daemon):
         self.temp = '/temp'
         self.today = '/today'
         self.start = '/start'
+        self.pull = '/pull'
         
         self.weekdays = ['/tuesday', '/wednesday', '/thursday', '/friday', '/saturday']
         self.dayoffs = ['/monday', '/sunday']
@@ -144,7 +154,7 @@ if __name__ == '__main__':
 
     worker = Worker('/tmp/neighborhoodBot.pid')
 
-    logfile = 'neighbourhoodBot.log'
+    logfile = '/home/pi/NeighborhoodBot/neighbourhoodBot.log'
     logging.basicConfig(format = '%(asctime)s:%(levelname)s:%(message)s' ,level = logging.WARNING)
     
     if len(sys.argv) == 2:
