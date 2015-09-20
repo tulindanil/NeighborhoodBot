@@ -1,6 +1,6 @@
 import time, sys, os, logging, datetime, json
 from daemon import Daemon
-from collections import OrderedDict
+import collections
 
 import telegram
 
@@ -31,7 +31,7 @@ class schedule:
             day = data[str(weekday)]
             answer = "Your schedule :\n"
             
-            day_sorted = OrderedDict(sorted(data.items()))
+            day_sorted = collections.OrderedDict(sorted(data.items()))
             
             for lesson in day_sorted:
                 answer += "%s - %s: %s\n" % (day_sorted[lesson]['time'], day_sorted[lesson]['subject'], day_sorted[lesson]['place'])
