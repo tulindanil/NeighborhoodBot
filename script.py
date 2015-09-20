@@ -46,7 +46,7 @@ class storage:
 
             filepath = '/etc/NeighborhoodBot/users.json'
             f = open(filepath, 'r')
-            data = json.load(f.read())
+            data = json.load(f)
 
             try:
                 index = data.index(user.to_json())
@@ -54,7 +54,7 @@ class storage:
                 data.append(user.to_json())
                 f = open (filepath, 'w')
                 f.write(data)
-                    
+
             f.close()
 
         except Exception as e:
