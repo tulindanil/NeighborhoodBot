@@ -1,5 +1,6 @@
 import time, sys, os, logging, datetime, json
 from daemon import Daemon
+from collections import OrderedDict
 
 import telegram
 
@@ -29,8 +30,10 @@ class schedule:
         try:
             day = data[str(weekday)]
             answer = "Your schedule :\n"
-            print day
-            for lesson in day:
+            
+            day_sorted = OrderedDict(sorted(data.items()))
+            
+            for lesson in day_sorted:
                 answer += "%s - %s: %s\n" % (day[lesson]['time'], day[lesson]['subject'], day[lesson]['place'])
         except:
             answer = "I think you got a dayoff!"
