@@ -154,11 +154,10 @@ if __name__ == '__main__':
 
     worker = Worker('/tmp/neighborhoodBot.pid')
 
-    logfile = '/home/pi/NeighborhoodBot/neighbourhoodBot.log'
+    logfile = '/home/pi/neighbourhoodBot.log'
     logging.basicConfig(format = '%(asctime)s:%(levelname)s:%(message)s' ,level = logging.WARNING)
     
     if len(sys.argv) == 2:
-        
         if 'start' == sys.argv[1]:
             if os.path.exists(logfile):
                 os.remove(logfile)
