@@ -74,7 +74,7 @@ class Worker(Daemon):
         updates = bot.getUpdates()
             
         if len(updates) == 0:
-            continue
+            return
             
         update_id = updates[len(updates) - 1].update_id
         bot.getUpdates(update_id + 1)
