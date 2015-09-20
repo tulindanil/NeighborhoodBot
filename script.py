@@ -69,7 +69,7 @@ class storage:
 
 class Worker(Daemon):
 
-    def main_loop(bot):
+    def main_loop(self, bot):
     
         updates = bot.getUpdates()
             
