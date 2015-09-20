@@ -46,7 +46,13 @@ class storage:
 
             filepath = '/etc/NeighborhoodBot/users.json'
             f = open(filepath, 'r')
-            data = json.load(f)
+            
+            data = []
+            
+            try:
+                data = json.load(f)
+            except:
+                data = []
 
             try:
                 index = data.index(user.to_json())
