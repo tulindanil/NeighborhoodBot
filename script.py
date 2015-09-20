@@ -34,7 +34,9 @@ class schedule:
             day_sorted = collections.OrderedDict(sorted(data.items()))
             
             for lesson in day_sorted:
+                print lesson
                 answer += "%s - %s: %s\n" % (day_sorted[lesson]['time'], day_sorted[lesson]['subject'], day_sorted[lesson]['place'])
+    
         except Exception as e:
             print e.errno
             answer = "I think you got a dayoff!"
