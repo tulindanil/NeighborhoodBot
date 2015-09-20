@@ -45,8 +45,16 @@ class storage:
         try:
 
             filepath = '/etc/NeighborhoodBot/users.json'
-            f = open(filepath, 'w')
-            f.write(user.to_json())
+            f = open(filepath, 'r')
+            data = json.load(f.read())
+
+            try:
+                index = data.index(user.to_json())
+            except:
+                data.append(user.to_json())
+                f = open (filepath, 'w')
+                f.write(data)
+                    
             f.close()
 
         except Exception as e:
