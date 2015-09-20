@@ -29,6 +29,7 @@ class schedule:
         try:
             day = data[str(weekday)]
             answer = "Your schedule :\n"
+            print day
             for lesson in day:
                 answer += "%s - %s: %s\n" % (day[lesson]['time'], day[lesson]['subject'], day[lesson]['place'])
         except:
