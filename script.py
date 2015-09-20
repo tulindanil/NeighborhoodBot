@@ -36,7 +36,7 @@ class schedule:
             for lesson in day_sorted:
                 answer += "%s - %s: %s\n" % (day_sorted[lesson]['time'], day_sorted[lesson]['subject'], day_sorted[lesson]['place'])
         except Exception as e:
-            print e
+            print e.strerror
             answer = "I think you got a dayoff!"
 
         return answer
