@@ -71,6 +71,22 @@ class storage:
 
             logging.error('Failed to write in user file: %s', e)
 
+    @staticmethod
+    def usersQty:
+
+        try:
+    
+            filepath = '/etc/NeighborhoodBot/users.json'
+            f = open(filepath, 'r')
+            data = json.load(f)
+            f.close()
+        
+            return len(data)
+        
+        except Exception as e:
+            
+            logging.error('Failed to read in user file: %s', e)
+
 class Worker(Daemon):
 
     def main_loop(self, bot):
@@ -109,6 +125,10 @@ class Worker(Daemon):
                 weekday = datetime.datetime.today().weekday()
                 bot.sendMessage(m.from_user.id, schedule.getDescription(weekday), reply_markup = telegram.ReplyKeyboardHide())
     
+            elif m.text == self.stats:
+            
+                bot.sendMessage(m.from_user.id, str(storage.usersQty) + 'users were here', reply_markup = telegram.ReplyKeyboardHide())
+    
             elif m.text == self.help:
             
                 bot.sendMessage(m.from_user.id, 'You can control me by sending these commands:\n /today - schedule for this day\n /temp - current temp in Dan\'s room\n /schedule - schedule for days', reply_markup = telegram.ReplyKeyboardHide())
@@ -139,6 +159,7 @@ class Worker(Daemon):
         self.start = '/start'
         self.schedule = '/schedule'
         self.help = '/help'
+        self.stats = '/stats'
         
         self.weekdays = ['/tuesday', '/wednesday', '/thursday', '/friday', '/saturday']
         self.dayoffs = ['/monday', '/sunday']
