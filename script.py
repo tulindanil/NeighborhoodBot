@@ -72,7 +72,7 @@ class storage:
             logging.error('Failed to write in user file: %s', e)
 
     @staticmethod
-    def usersQty:
+    def usersQty():
 
         try:
     
