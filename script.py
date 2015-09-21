@@ -109,6 +109,10 @@ class Worker(Daemon):
                 weekday = datetime.datetime.today().weekday()
                 bot.sendMessage(m.from_user.id, schedule.getDescription(weekday), reply_markup = telegram.ReplyKeyboardHide())
     
+            elif m.text == self.help:
+            
+                bot.sendMessage(m.from_user.id, 'You can control me by sending these commands:\n /today - schedule for this day\n /temp - current temp in Dan\'s room\n /schedule - schedule for days', reply_markup = telegram.ReplyKeyboardHide())
+    
             else:
                 
                 bot.sendMessage(m.from_user.id, 'Sorry, I dont understand you :(', reply_markup = telegram.ReplyKeyboardHide())
@@ -134,6 +138,7 @@ class Worker(Daemon):
         self.today = '/today'
         self.start = '/start'
         self.schedule = '/schedule'
+        self.help = '/help'
         
         self.weekdays = ['/tuesday', '/wednesday', '/thursday', '/friday', '/saturday']
         self.dayoffs = ['/monday', '/sunday']
