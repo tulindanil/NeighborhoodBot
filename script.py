@@ -127,7 +127,7 @@ class Worker(Daemon):
     
             elif m.text == self.stats:
             
-                bot.sendMessage(m.from_user.id, str(storage.usersQty) + 'users were here', reply_markup = telegram.ReplyKeyboardHide())
+                bot.sendMessage(m.from_user.id, str(storage.usersQty()) + 'users were here', reply_markup = telegram.ReplyKeyboardHide())
     
             elif m.text == self.help:
             
