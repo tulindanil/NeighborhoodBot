@@ -92,31 +92,26 @@ class Worker(Daemon):
                 bot.sendMessage(m.from_user.id, 'Good day!')
                 storage.addUser(m.from_user)
             
-            elif m.text == self.pull:
-            
-                try:
-                    os.system('cd /home/pi/NeighborhoodBot && git pull')
-                    bot.sendMessage(m.from_user.id, 'Succesfully pulled!')
-                    os.system('cd /home/pi/NeighborhoodBot && python script.py restart')
-                except Exception as e:
-                    logging.warnign('Files to pull: %s', e)
-            
             elif m.text == self.temp:
                 
-                bot.sendMessage(m.from_user.id, str(hardware.getTemperature()))
+                bot.sendMessage(m.from_user.id, str(hardware.getTemperature()), reply_markup = telegram.ReplyKeyboardHide)
         
+            elif m.text == self.schedule:
+            
+                bot.sendMessage(m.from_user.id, 'Choose a day', reply_markup = telegram.ReplyKeyboardMarkup([[self.weekdays[0], self.weekdays[1]], [self.weekdays[2], self.weekdays[3], self.weekdays[4]]]))
+                
             elif m.text in self.weekdays:
                 
-                bot.sendMessage(m.from_user.id, schedule.getDescription(self.weekdays.index(m.text) + 1))
-            
+                bot.sendMessage(m.from_user.id, schedule.getDescription(self.weekdays.index(m.text) + 1), reply_markup = telegram.ReplyKeyboardHide)
+
             elif m.text == self.today:
                 
                 weekday = datetime.datetime.today().weekday()
-                bot.sendMessage(m.from_user.id, schedule.getDescription(weekday))
+                bot.sendMessage(m.from_user.id, schedule.getDescription(weekday), reply_markup = telegram.ReplyKeyboardHide)
     
             else:
                 
-                bot.sendMessage(m.from_user.id, 'Sorry, I dont understand you :(')
+                bot.sendMessage(m.from_user.id, 'Sorry, I dont understand you :(', reply_markup = telegram.ReplyKeyboardHide)
 
     def run(self):
     
@@ -138,13 +133,12 @@ class Worker(Daemon):
         self.temp = '/temp'
         self.today = '/today'
         self.start = '/start'
-        self.pull = '/pull'
+        self.schedule = '/schedule'
         
         self.weekdays = ['/tuesday', '/wednesday', '/thursday', '/friday', '/saturday']
         self.dayoffs = ['/monday', '/sunday']
 
         while 1:
-            
             try:
                 self.main_loop(bot)
             except Exception as e:
