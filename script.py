@@ -89,12 +89,12 @@ class Worker(Daemon):
             
             if m.text == self.start:
                 
-                bot.sendMessage(m.from_user.id, 'Good day!')
+                bot.sendMessage(m.from_user.id, 'Good day!', reply_markup = telegram.ReplyKeyboardHide())
                 storage.addUser(m.from_user)
             
             elif m.text == self.temp:
                 
-                bot.sendMessage(m.from_user.id, str(hardware.getTemperature()), reply_markup = telegram.ReplyKeyboardHide)
+                bot.sendMessage(m.from_user.id, str(hardware.getTemperature()), reply_markup = telegram.ReplyKeyboardHide())
         
             elif m.text == self.schedule:
             
@@ -102,16 +102,16 @@ class Worker(Daemon):
                 
             elif m.text in self.weekdays:
                 
-                bot.sendMessage(m.from_user.id, schedule.getDescription(self.weekdays.index(m.text) + 1), reply_markup = telegram.ReplyKeyboardHide)
+                bot.sendMessage(m.from_user.id, schedule.getDescription(self.weekdays.index(m.text) + 1), reply_markup = telegram.ReplyKeyboardHide())
 
             elif m.text == self.today:
                 
                 weekday = datetime.datetime.today().weekday()
-                bot.sendMessage(m.from_user.id, schedule.getDescription(weekday), reply_markup = telegram.ReplyKeyboardHide)
+                bot.sendMessage(m.from_user.id, schedule.getDescription(weekday), reply_markup = telegram.ReplyKeyboardHide())
     
             else:
                 
-                bot.sendMessage(m.from_user.id, 'Sorry, I dont understand you :(', reply_markup = telegram.ReplyKeyboardHide)
+                bot.sendMessage(m.from_user.id, 'Sorry, I dont understand you :(', reply_markup = telegram.ReplyKeyboardHide())
 
     def run(self):
     
