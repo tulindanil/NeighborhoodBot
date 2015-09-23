@@ -9,7 +9,7 @@ class hardware:
     @staticmethod
     def getTemperature():
         
-        filepath = '/sys/devices/w1_bus_master1/28-0000052c4b73/w1_slave'
+        filepath = '/sys/devices/w1_bus_master1/28-0114504f0cff/w1_slave'
         f = open(filepath, 'r')
         data = f.read()
         f.close()
