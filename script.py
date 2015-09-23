@@ -16,61 +16,6 @@ class hardware:
         
         return float(data[data.find('t=')+2:])/1000
 
-class schedule:
-
-    @staticmethod
-    def getDescription(weekday):
-
-        raw = open('/home/pi/NeighborhoodBot/schedule.json')
-        data = json.load(raw)
-        raw.close()
-            
-        answer = ""
-                
-        try:
-            day = data[str(weekday)]
-            answer = "Your schedule :\n"
-            
-            day_sorted = collections.OrderedDict(sorted(day.items()))
-            for lesson in day_sorted:
-                answer += "%s - %s: %s\n" % (day_sorted[lesson]['time'], day_sorted[lesson]['subject'], day_sorted[lesson]['place'])
-    
-        except:
-            answer = "I think you got a dayoff!"
-
-        return answer
-
-class storage:
-
-    @staticmethod
-    def addUser(user):
-
-        try:
-
-            filepath = '/etc/NeighborhoodBot/users.json'
-            f = open(filepath, 'r')
-            
-            data = {}
-            
-            try:
-                data = json.load(f)
-            except:
-                data = {}
-
-            try:
-                index = data.index(user.to_json())
-            except:
-                data[str(user.id)] = user.to_json()
-                f.close()
-                f = open(filepath, 'w')
-                f.write(json.dumps(data))
-
-            f.close()
-
-        except Exception as e:
-
-            logging.error('Failed to write in user file: %s', e)
-
 class Worker(Daemon):
 
     def main_loop(self, bot):
@@ -96,22 +41,9 @@ class Worker(Daemon):
                 
                 bot.sendMessage(m.from_user.id, str(hardware.getTemperature()), reply_markup = telegram.ReplyKeyboardHide())
         
-            elif m.text == self.schedule:
-            
-                bot.sendMessage(m.from_user.id, 'Choose a day', reply_markup = telegram.ReplyKeyboardMarkup([[self.weekdays[0], self.weekdays[1]], [self.weekdays[2], self.weekdays[3], self.weekdays[4]]]))
-                
-            elif m.text in self.weekdays:
-                
-                bot.sendMessage(m.from_user.id, schedule.getDescription(self.weekdays.index(m.text) + 1), reply_markup = telegram.ReplyKeyboardHide())
-
-            elif m.text == self.today:
-                
-                weekday = datetime.datetime.today().weekday()
-                bot.sendMessage(m.from_user.id, schedule.getDescription(weekday), reply_markup = telegram.ReplyKeyboardHide())
-    
             elif m.text == self.help:
             
-                bot.sendMessage(m.from_user.id, 'You can control me by sending these commands:\n /today - schedule for this day\n /temp - current temp in Dan\'s room\n /schedule - schedule for days', reply_markup = telegram.ReplyKeyboardHide())
+                bot.sendMessage(m.from_user.id, 'You can control me by sending these commands:\n /temp - current temp in Dan\'s room', reply_markup = telegram.ReplyKeyboardHide())
     
             else:
                 
@@ -124,7 +56,7 @@ class Worker(Daemon):
         token = ''
         
         try:
-            f = open('/etc/NeighborhoodBot/.auth.info')
+            f = open('/etc/SmartHome/.auth.info')
             token = f.read()[:-1]
         except:
             logging.error('Auth.info not provided')
@@ -135,13 +67,8 @@ class Worker(Daemon):
         bot = telegram.Bot(token)
 
         self.temp = '/temp'
-        self.today = '/today'
         self.start = '/start'
-        self.schedule = '/schedule'
         self.help = '/help'
-        
-        self.weekdays = ['/tuesday', '/wednesday', '/thursday', '/friday', '/saturday']
-        self.dayoffs = ['/monday', '/sunday']
 
         while 1:
             try:
@@ -153,7 +80,7 @@ if __name__ == '__main__':
 
     worker = Worker('/tmp/neighborhoodBot.pid')
 
-    logfile = '/home/pi/neighbourhoodBot.log'
+    logfile = '/home/pi/SmartHomeBot.log'
     logging.basicConfig(format = '%(asctime)s:%(levelname)s:%(message)s' ,level = logging.WARNING)
     
     if len(sys.argv) == 2:
