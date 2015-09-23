@@ -35,7 +35,6 @@ class Worker(Daemon):
             if m.text == self.start:
                 
                 bot.sendMessage(m.from_user.id, 'Good day!', reply_markup = telegram.ReplyKeyboardHide())
-                storage.addUser(m.from_user)
             
             elif m.text == self.temp:
                 
