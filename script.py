@@ -175,7 +175,7 @@ if __name__ == '__main__':
     worker = Worker('/tmp/neighborhoodBot.pid')
 
     logfile = '/home/pi/neighbourhoodBot.log'
-    logging.basicConfig(format = '%(asctime)s:%(levelname)s:%(message)s' ,level = logging.WARNING)
+    logging.basicConfig(format = '%(asctime)s:%(levelname)s:%(message)s' ,level = logging.WARNING, filename = logfile)
     
     if len(sys.argv) == 2:
         if 'start' == sys.argv[1]:
