@@ -151,7 +151,7 @@ class Worker(Daemon):
                 now = date.today()
                 weekday = now.weekday()
                     
-                if weekday > 5 || weekday < 1:
+                if weekday > 5 or weekday < 1:
                     weekday = 1
 
                 print weekday
