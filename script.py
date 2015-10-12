@@ -153,7 +153,8 @@ class Worker(Daemon):
                     
                 if weekday > 5:
                     weekday = 1
-                        
+
+                print weekday
                 today_schedule = schedule.getSchedule(weekday)
                 print today_schedule
     
