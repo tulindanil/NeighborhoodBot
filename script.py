@@ -149,7 +149,13 @@ class Worker(Daemon):
             elif m.text == self.now:
     
                 now = date.today()
-                print now
+                weekday = now.weekday()
+                    
+                if weekday > 5:
+                    weekday = 1
+                        
+                today_schedule = schedule.getSchedule(weekday)
+                print today_schedule
     
             else:
                 
