@@ -1,4 +1,5 @@
-import time, sys, os, logging, datetime, json
+import time, sys, os, logging, json
+from datetime import date
 from daemon import Daemon
 import collections
 
@@ -17,6 +18,18 @@ class hardware:
         return float(data[data.find('t=')+2:])/1000
 
 class schedule:
+
+    @staticmethod
+    def getSchedule(weekday):
+    
+        raw = open('/home/pi/NeighborhoodBot/schedule.json')
+        data = json.load(raw)
+        raw.close()
+        
+        try:
+            return data[str(weekday)]
+        except:
+            return None
 
     @staticmethod
     def getDescription(weekday):
@@ -133,9 +146,14 @@ class Worker(Daemon):
             
                 bot.sendMessage(m.from_user.id, 'You can control me by sending these commands:\n /today - schedule for this day\n /temp - current temp in Dan\'s room\n /schedule - schedule for days', reply_markup = telegram.ReplyKeyboardHide())
     
+            elif m.text == self.now:
+    
+                now = date.today()
+                print now
+    
             else:
                 
-                bot.sendMessage(m.from_user.id, 'Sorry, I dont understand you :(', reply_markup = telegram.ReplyKeyboardHide())
+                bot.sendMessage(m.from_user.id, 'Sorry, I don\'t understand you :(', reply_markup = telegram.ReplyKeyboardHide())
 
     def run(self):
     
@@ -160,6 +178,8 @@ class Worker(Daemon):
         self.schedule = '/schedule'
         self.help = '/help'
         self.stats = '/stats'
+        self.now = '/now'
+        
         
         self.weekdays = ['/tuesday', '/wednesday', '/thursday', '/friday', '/saturday']
         self.dayoffs = ['/monday', '/sunday']
