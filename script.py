@@ -1,5 +1,6 @@
 import time, sys, os, logging, json
 from datetime import date
+import datetime
 from daemon import Daemon
 import collections
 
@@ -21,13 +22,12 @@ class schedule:
 
     @staticmethod
     def getSchedule(weekday):
-    
-        raw = open('/home/pi/NeighborhoodBot/schedule.json')
-        data = json.load(raw)
-        raw.close()
         
         try:
-            return data[str(weekday)]
+            raw = open('/home/pi/NeighborhoodBot/schedule.json')
+            data = json.load(raw)
+            raw.close()
+            return collections.OrderedDict(sorted(data[str(weekday)].items()))
         except:
             return None
 
@@ -146,17 +146,27 @@ class Worker(Daemon):
             
                 bot.sendMessage(m.from_user.id, 'You can control me by sending these commands:\n /today - schedule for this day\n /temp - current temp in Dan\'s room\n /schedule - schedule for days', reply_markup = telegram.ReplyKeyboardHide())
     
-            elif m.text == self.now:
+            elif m.text == self.what:
     
                 now = date.today()
                 weekday = now.weekday()
                     
                 if weekday > 5 or weekday < 1:
-                    weekday = 1
+                    tuesday = schedule.getSchedule(1)
+                    lesson = tuesday[str(0)]
+                    answer = "%s - %s: %s\n" % (lesson['time'], lesson['subject'], lesson['place'])
+                    bot.sendMessage(m.from_user.id, answer, reply_markup = telegram.ReplyKeyboardHide())
+                    continue
 
-                print weekday
+
+                now_hour = datetime.time.hour
+
                 today_schedule = schedule.getSchedule(weekday)
-                print today_schedule
+                for lesson in today_schedule:
+                    hour = today_schedule[lesson]['time'].split(':')[0]
+                    mins = today_schedule[lesson]['time'].split(':')[1]
+                        
+                    
     
             else:
                 
@@ -185,7 +195,7 @@ class Worker(Daemon):
         self.schedule = '/schedule'
         self.help = '/help'
         self.stats = '/stats'
-        self.now = '/now'
+        self.what = '/what'
         
         
         self.weekdays = ['/tuesday', '/wednesday', '/thursday', '/friday', '/saturday']
