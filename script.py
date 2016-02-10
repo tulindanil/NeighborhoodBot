@@ -47,7 +47,6 @@ class schedule:
             day_sorted = collections.OrderedDict(sorted(day.items()))
             for lesson in day_sorted:
                 answer += "%s - %s: %s\n" % (day_sorted[lesson]['time'], day_sorted[lesson]['subject'], day_sorted[lesson]['place'])
-    
         except:
             answer = "I think you got a dayoff!"
 
@@ -165,8 +164,6 @@ class Worker(Daemon):
                 for lesson in today_schedule:
                     hour = today_schedule[lesson]['time'].split(':')[0]
                     mins = today_schedule[lesson]['time'].split(':')[1]
-                        
-                    
     
             else:
                 
@@ -197,7 +194,6 @@ class Worker(Daemon):
         self.stats = '/stats'
         self.what = '/what'
         
-        
         self.weekdays = ['/tuesday', '/wednesday', '/thursday', '/friday', '/saturday']
         self.dayoffs = ['/monday', '/sunday']
 
@@ -212,14 +208,15 @@ if __name__ == '__main__':
     worker = Worker('/tmp/neighborhoodBot.pid')
 
     logfile = '/home/pi/neighbourhoodBot.log'
-    logging.basicConfig(format = '%(asctime)s:%(levelname)s:%(message)s' ,level = logging.WARNING, filename = logfile)
+    logging.basicConfig(format = '%(asctime)s:%(levelname)s:%(message)s', level = logging.WARNING, filename = logfile)
     
     if len(sys.argv) == 2:
+        
         if 'start' == sys.argv[1]:
             if os.path.exists(logfile):
                 os.remove(logfile)
             worker.start()
-        
+    
         elif 'stop' == sys.argv[1]:
             worker.stop()
         
@@ -236,7 +233,7 @@ if __name__ == '__main__':
         sys.exit(0)
     
     elif len(sys.argv) == 3:
-
+        
         if os.path.exists(logfile):
             os.remove(logfile)
 
